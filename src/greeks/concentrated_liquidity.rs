@@ -69,7 +69,7 @@ pub fn concentrated_gamma(l: f32, p: f32) -> f32 {
 
 #[cfg(test)]
 mod tests {
-    use greeks::*;
+    use crate::greeks::*;
 
     // a token reserves
     const R_A: f32 = 6779.0;

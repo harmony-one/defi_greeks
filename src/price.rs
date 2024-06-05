@@ -1,7 +1,7 @@
 use std::f64::consts::E;
 
-use common::*;
-use stats::cnd;
+use crate::common::{d1, d2_d1};
+use crate::stats::cnd;
 
 /// Evaluates the price of a European call option on an underlying which does not pay dividends before expiry of the option using the Black-Scholes model
 ///
@@ -40,7 +40,7 @@ pub fn euro_put(s0: f64, x: f64, t: f64, r: f64, q: f64, sigma: f64) -> f64 {
 #[cfg(test)]
 mod tests {
 
-    use price::*;
+    use crate::price::*;
 
     const UNDERLYING: f64 = 64.68;
     const STRIKE: f64 = 65.00;
