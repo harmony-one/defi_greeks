@@ -1,7 +1,7 @@
 // Module containing functions for calculating second order greeks
 use std::f64::consts::E;
 
-use crate::stats::cnd;
+// use crate::stats::cnd;
 use crate::d1;
 use crate::one_over_sqrt_pi;
 

@@ -1,14 +1,11 @@
-use actix_web::{web, App, HttpServer};
+use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 use serde::{Deserialize, Serialize};
 
 // Import the necessary functions and structs from your library
-use crate::greeks::*;
-use crate::greeks::first::{delta_call, delta_put, lambda_call, lambda_put, rho_call, rho_put, theta_call, theta_put, vega};
-use crate::greeks::second::gamma;
-use crate::greeks::squeeks::{sqth_delta, sqth_gamma, sqth_theta, sqth_to_usd, sqth_vega};
-use crate::greeks::concentrated_liquidity::{concentrated_delta, concentrated_gamma, virtual_liquidity};
-
-// ... (previous code for PriceRequest, PriceResponse, price route, ValueRequest, ValueResponse, value route)
+use defi_greeks_lib::concentrated_liquidity::{concentrated_delta, concentrated_gamma, virtual_liquidity};
+use defi_greeks_lib::first::{delta_call, delta_put, lambda_call, lambda_put, rho_call, rho_put, theta_call, theta_put, vega};
+use defi_greeks_lib::second::gamma;
+use defi_greeks_lib::squeeks::{sqth_delta, sqth_gamma, sqth_theta, sqth_to_usd, sqth_vega};
 
 #[derive(Deserialize)]
 struct GreeksRequest {
@@ -36,8 +33,10 @@ struct GreeksResponse {
 }
 
 // Define the API route for calculating greeks
-#[actix_web::post("/greeks")]
-async fn greeks(req: web::Json<GreeksRequest>) -> web::Json<GreeksResponse> {
+// This endpoint accepts a POST request with a JSON payload containing the input parameters
+// It returns a JSON response with the calculated greeks values
+#[actix_web::post("/calculate_greeks")]
+async fn calculate_greeks(req: web::Json<GreeksRequest>) -> web::Json<GreeksResponse> {
     let delta_call = delta_call(req.s0, req.x, req.t, req.r, req.q, req.sigma);
     let delta_put = delta_put(req.s0, req.x, req.t, req.r, req.q, req.sigma);
     let lambda_call = lambda_call(req.s0, req.x, req.t, req.r, req.q, req.sigma, req.v);
@@ -82,6 +81,8 @@ struct SqueethResponse {
 }
 
 // Define the API route for calculating squeeth greeks
+// This endpoint accepts a POST request with a JSON payload containing the input parameters
+// It returns a JSON response with the calculated squeeth greeks values
 #[actix_web::post("/squeeth")]
 async fn squeeth(req: web::Json<SqueethRequest>) -> web::Json<SqueethResponse> {
     let sqth_to_usd = sqth_to_usd(req.eth_price, req.normalization_factor, req.iv);
@@ -118,6 +119,8 @@ struct ConcentratedLiquidityResponse {
 }
 
 // Define the API route for calculating concentrated liquidity greeks
+// This endpoint accepts a POST request with a JSON payload containing the input parameters
+// It returns a JSON response with the calculated concentrated liquidity greeks values
 #[actix_web::post("/concentrated-liquidity")]
 async fn concentrated_liquidity(req: web::Json<ConcentratedLiquidityRequest>) -> web::Json<ConcentratedLiquidityResponse> {
     let virtual_liquidity = virtual_liquidity(req.p_a, req.p_b, req.r_a, req.r_b);
@@ -133,15 +136,19 @@ async fn concentrated_liquidity(req: web::Json<ConcentratedLiquidityRequest>) ->
     web::Json(response)
 }
 
+#[actix_web::get("/health")]
+async fn health() -> impl Responder {
+    HttpResponse::Ok().body("I'm healthy")
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
-            // .service(price)
-            // .service(value)
-            .service(greeks)
+            .service(calculate_greeks)
             .service(squeeth)
             .service(concentrated_liquidity)
+            .service(health)
     })
     .bind("127.0.0.1:8080")?
     .run()

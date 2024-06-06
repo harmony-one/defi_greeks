@@ -1,4 +1,4 @@
-extern crate greeks;
+// extern crate greeks;
 
 const UNDERLYING: f64 = 64.68;
 const STRIKE: f64 = 65.00;
@@ -11,7 +11,7 @@ const TIME_TO_EXPIRY: f64 = 23.0 / DAYS_PER_YEAR;
 const E_CALL_DELTA: f64 = 0.5079;
 
 fn main() {
-    let actual_delta = greeks::delta_call(
+    let actual_delta = defi_greeks_lib::delta_call(
         UNDERLYING,
         STRIKE,
         TIME_TO_EXPIRY,
