@@ -1,5 +1,7 @@
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 use serde::{Deserialize, Serialize};
+use dotenv::dotenv;
+use std::env;
 
 // Import the necessary functions and structs from your library
 use defi_greeks_lib::concentrated_liquidity::{concentrated_delta, concentrated_gamma, virtual_liquidity};
@@ -143,6 +145,17 @@ async fn health() -> impl Responder {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    dotenv().ok();
+
+    let environment = env::var("ENVIRONMENT").unwrap_or_else(|_| "development".to_string());
+    let (ip_address, port) = if environment == "production" {
+        ("0.0.0.0".to_string(), "8080".to_string())
+    } else {
+        ("127.0.0.1".to_string(), "8080".to_string())
+    };
+
+    let bind_address = format!("{}:{}", ip_address, port);
+
     HttpServer::new(|| {
         App::new()
             .service(calculate_greeks)
@@ -150,7 +163,7 @@ async fn main() -> std::io::Result<()> {
             .service(concentrated_liquidity)
             .service(health)
     })
-    .bind("127.0.0.1:8080")?
+    .bind(bind_address)?
     .run()
     .await
 }

@@ -1,0 +1,36 @@
+# Version control
+.git
+.gitignore
+
+# Rust build artifacts
+target
+
+# Editor and IDE files
+.vscode
+.idea
+*.sublime-workspace
+*.swp
+*.swo
+
+# Environment-specific files
+.env
+.env.*
+
+# Documentation and examples
+README.md
+LICENSE
+CHANGELOG
+docs
+examples
+
+# Cargo files
+Cargo.lock
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Personal configuration files
+.bashrc
+.bash_profile
+.gitconfig
