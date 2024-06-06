@@ -1,7 +1,8 @@
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
+use defi_greeks_lib::logger::{self, Header};
 use serde::{Deserialize, Serialize};
 use dotenv::dotenv;
-use std::env;
+use defi_greeks_lib::config::ENVIRONMENT;
 
 use defi_greeks_lib::concentrated_liquidity::{concentrated_delta, concentrated_gamma, virtual_liquidity};
 use defi_greeks_lib::first::{delta_call, delta_put, lambda_call, lambda_put, rho_call, rho_put, theta_call, theta_put, vega};
@@ -35,6 +36,7 @@ struct GreeksResponse {
 
 #[actix_web::post("/calculate_greeks")]
 async fn calculate_greeks(req: web::Json<GreeksRequest>) -> web::Json<GreeksResponse> {
+    logger::log(Header::INFO, "Handling calculate_greeks request");
     let delta_call = delta_call(req.s0, req.x, req.t, req.r, req.q, req.sigma);
     let delta_put = delta_put(req.s0, req.x, req.t, req.r, req.q, req.sigma);
     let lambda_call = lambda_call(req.s0, req.x, req.t, req.r, req.q, req.sigma, req.v);
@@ -80,6 +82,7 @@ struct SqueethResponse {
 
 #[actix_web::post("/squeeth")]
 async fn squeeth(req: web::Json<SqueethRequest>) -> web::Json<SqueethResponse> {
+    logger::log(Header::INFO, "Handling squeeth request");
     let sqth_to_usd = sqth_to_usd(req.eth_price, req.normalization_factor, req.iv);
     let sqth_delta = sqth_delta(req.eth_price, req.normalization_factor, req.iv);
     let sqth_gamma = sqth_gamma(req.normalization_factor, req.iv);
@@ -115,6 +118,7 @@ struct ConcentratedLiquidityResponse {
 
 #[actix_web::post("/concentrated-liquidity")]
 async fn concentrated_liquidity(req: web::Json<ConcentratedLiquidityRequest>) -> web::Json<ConcentratedLiquidityResponse> {
+    logger::log(Header::INFO, "Handling concentrated-liquidity request");
     let virtual_liquidity = virtual_liquidity(req.p_a, req.p_b, req.r_a, req.r_b);
     let concentrated_delta = concentrated_delta(virtual_liquidity, req.p, req.p_b);
     let concentrated_gamma = concentrated_gamma(virtual_liquidity, req.p);
@@ -137,10 +141,11 @@ async fn health() -> impl Responder {
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
 
-    let environment = env::var("ENVIRONMENT").unwrap_or_else(|_| "development".to_string());
-    let (ip_address, port) = if environment == "production" {
+    let (ip_address, port) = if *ENVIRONMENT == "production" {
+        logger::log(Header::INFO, "Production environment");
         ("0.0.0.0".to_string(), "8080".to_string())
     } else {
+        logger::log(Header::INFO, "Development environment");
         ("127.0.0.1".to_string(), "8080".to_string())
     };
 

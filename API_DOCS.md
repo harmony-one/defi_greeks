@@ -22,7 +22,7 @@ The `/concentrated-liquidity` endpoint calculates risk measures (greeks) for a c
 
 ### Example
 ```bash
-curl -X POST -H "Content-Type: application/json" -d '{"p_a":3000.0,"p_b":3500.0,"r_a":10.0,"r_b":20.0,"p":3200.0}' http://localhost:8080/concentrated_liquidity
+curl -X POST -H "Content-Type: application/json" -d '{"p_a":3000.0,"p_b":3500.0,"r_a":10.0,"r_b":20.0,"p":3200.0}' http://localhost:8080/concentrated-liquidity
 ```
 
 ## Calculate Greeks Endpoint
