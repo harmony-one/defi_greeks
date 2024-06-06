@@ -3,7 +3,6 @@ use serde::{Deserialize, Serialize};
 use dotenv::dotenv;
 use std::env;
 
-// Import the necessary functions and structs from your library
 use defi_greeks_lib::concentrated_liquidity::{concentrated_delta, concentrated_gamma, virtual_liquidity};
 use defi_greeks_lib::first::{delta_call, delta_put, lambda_call, lambda_put, rho_call, rho_put, theta_call, theta_put, vega};
 use defi_greeks_lib::second::gamma;
@@ -34,9 +33,6 @@ struct GreeksResponse {
     gamma: f64,
 }
 
-// Define the API route for calculating greeks
-// This endpoint accepts a POST request with a JSON payload containing the input parameters
-// It returns a JSON response with the calculated greeks values
 #[actix_web::post("/calculate_greeks")]
 async fn calculate_greeks(req: web::Json<GreeksRequest>) -> web::Json<GreeksResponse> {
     let delta_call = delta_call(req.s0, req.x, req.t, req.r, req.q, req.sigma);
@@ -82,9 +78,6 @@ struct SqueethResponse {
     sqth_vega: f64,
 }
 
-// Define the API route for calculating squeeth greeks
-// This endpoint accepts a POST request with a JSON payload containing the input parameters
-// It returns a JSON response with the calculated squeeth greeks values
 #[actix_web::post("/squeeth")]
 async fn squeeth(req: web::Json<SqueethRequest>) -> web::Json<SqueethResponse> {
     let sqth_to_usd = sqth_to_usd(req.eth_price, req.normalization_factor, req.iv);
@@ -120,9 +113,6 @@ struct ConcentratedLiquidityResponse {
     concentrated_gamma: f32,
 }
 
-// Define the API route for calculating concentrated liquidity greeks
-// This endpoint accepts a POST request with a JSON payload containing the input parameters
-// It returns a JSON response with the calculated concentrated liquidity greeks values
 #[actix_web::post("/concentrated-liquidity")]
 async fn concentrated_liquidity(req: web::Json<ConcentratedLiquidityRequest>) -> web::Json<ConcentratedLiquidityResponse> {
     let virtual_liquidity = virtual_liquidity(req.p_a, req.p_b, req.r_a, req.r_b);
