@@ -1,24 +1,53 @@
 [package]
 name = "defi_greeks"
 version = "0.0.1"
+edition = "2018"
 
 description = "Library to calculate greeks for an option, power perpetual, or concentrated liquidity share"
 repository = "https://github.com/0xperp/new_age_greeks"
 license = "MIT"
 readme = "README.md"
 
+[dependencies]
+actix-web = "4.3.1"  # Updated to the latest 4.x version
+serde = { version = "1.0.152", features = ["derive"] }  # Updated to the latest 1.0.x version
+dotenv = "0.15.0"
+colored = "2.1.0"
+chrono = "0.4.38"
+lazy_static = "1.4.0"
+
 [lib]
-name = "greeks"
+name = "defi_greeks_lib"
 path = "src/lib.rs"
 
-[[example]]
-name = "delta" # examples/delta.rs
+[[bin]]
+name = "defi_greeks"
+path = "src/main.rs"
 
-[[example]]
-name = "squeeth" # examples/squeeth.rs
+# [[example]]
+# name = "delta" # examples/delta.rs
 
-[[example]]
-name = "concentrated_liquidity" # examples/concentrated_liquidity.rs
+# [[example]]
+# name = "squeeth" # examples/squeeth.rs
+
+# [[example]]
+# name = "concentrated_liquidity" # examples/concentrated_liquidity.rs
 
 [features]
 unstable = []
+
+[[services]]
+internal_port = 8080
+protocol = "tcp"
+
+[services.concurrency]
+hard_limit = 25
+soft_limit = 20
+
+[[services.ports]]
+handlers = ["http"]
+port = "80"
+
+[[services.ports]]
+handlers = ["tls", "http"]
+port = "443"

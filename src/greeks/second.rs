@@ -1,7 +1,9 @@
 // Module containing functions for calculating second order greeks
 use std::f64::consts::E;
 
-use common::*;
+// use crate::stats::cnd;
+use crate::d1;
+use crate::one_over_sqrt_pi;
 
 /// Calculates the Gamma for an option
 ///
@@ -29,7 +31,7 @@ pub fn gamma_d1(s0: f64, t: f64, q: f64, sigma: f64, d1: f64) -> f64 {
 #[cfg(test)]
 mod tests {
 
-    use greeks::*;
+    use crate::greeks::*;
 
     const UNDERLYING: f64 = 64.68;
     const STRIKE: f64 = 65.00;

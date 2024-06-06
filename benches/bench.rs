@@ -1,10 +1,8 @@
 #![feature(test)]
 
-extern crate greeks;
 extern crate test;
 
 use self::test::Bencher;
-use greeks::*;
 
 const UNDERLYING: f64 = 64.68;
 const STRIKE: f64 = 65.00;
@@ -17,7 +15,7 @@ const TIME_TO_EXPIRY: f64 = 23.0 / DAYS_PER_YEAR;
 #[bench]
 fn delta_call_bench(b: &mut Bencher) {
     let _r = b.iter(|| {
-        delta_call(
+        defi_greeks_lib::delta_call(
             UNDERLYING,
             STRIKE,
             TIME_TO_EXPIRY,
@@ -31,7 +29,7 @@ fn delta_call_bench(b: &mut Bencher) {
 #[bench]
 fn delta_put_bench(b: &mut Bencher) {
     let _r = b.iter(|| {
-        delta_put(
+        defi_greeks_lib::delta_put(
             UNDERLYING,
             STRIKE,
             TIME_TO_EXPIRY,
@@ -45,7 +43,7 @@ fn delta_put_bench(b: &mut Bencher) {
 #[bench]
 fn rho_call_bench(b: &mut Bencher) {
     let _r = b.iter(|| {
-        rho_call(
+        defi_greeks_lib::rho_call(
             UNDERLYING,
             STRIKE,
             TIME_TO_EXPIRY,
@@ -59,7 +57,7 @@ fn rho_call_bench(b: &mut Bencher) {
 #[bench]
 fn rho_put_bench(b: &mut Bencher) {
     let _r = b.iter(|| {
-        rho_put(
+        defi_greeks_lib::rho_put(
             UNDERLYING,
             STRIKE,
             TIME_TO_EXPIRY,
@@ -73,7 +71,7 @@ fn rho_put_bench(b: &mut Bencher) {
 #[bench]
 fn theta_call_bench(b: &mut Bencher) {
     let _r = b.iter(|| {
-        theta_call(
+        defi_greeks_lib::theta_call(
             UNDERLYING,
             STRIKE,
             TIME_TO_EXPIRY,
@@ -88,7 +86,7 @@ fn theta_call_bench(b: &mut Bencher) {
 #[bench]
 fn theta_put_bench(b: &mut Bencher) {
     let _r = b.iter(|| {
-        theta_put(
+        defi_greeks_lib::theta_put(
             UNDERLYING,
             STRIKE,
             TIME_TO_EXPIRY,
@@ -103,7 +101,7 @@ fn theta_put_bench(b: &mut Bencher) {
 #[bench]
 fn vega_bench(b: &mut Bencher) {
     let _r = b.iter(|| {
-        vega(
+        defi_greeks_lib::vega(
             UNDERLYING,
             STRIKE,
             TIME_TO_EXPIRY,
@@ -117,7 +115,7 @@ fn vega_bench(b: &mut Bencher) {
 #[bench]
 fn gamma_bench(b: &mut Bencher) {
     let _r = b.iter(|| {
-        gamma(
+        defi_greeks_lib::gamma(
             UNDERLYING,
             STRIKE,
             TIME_TO_EXPIRY,

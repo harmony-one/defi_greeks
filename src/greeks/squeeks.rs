@@ -82,7 +82,7 @@ pub fn sqth_vega(eth_price: f64, normalization_factor: f64, iv: f64) -> f64 {
 
 #[cfg(test)]
 mod tests {
-    use greeks::*;
+    use crate::greeks::*;
 
     const ETH_PRICE: f64 = 3500.0;
     const NORMALIZATION_FACTOR: f64 = 0.8;

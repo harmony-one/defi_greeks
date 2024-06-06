@@ -1,8 +1,11 @@
 // Module containing functions for calculating first-order greeks
 use std::f64::consts::E;
 
-use common::*;
-use stats::cnd;
+use crate::stats::cnd;
+use crate::d1;
+use crate::d2;
+use crate::d2_d1;
+use crate::one_over_sqrt_pi;
 
 /// Calculates the delta of a call option.
 ///
@@ -183,8 +186,10 @@ pub fn vega_d1(s0: f64, t: f64, q: f64, d1: f64) -> f64 {
 #[cfg(test)]
 mod tests {
 
-    use greeks::*;
-    use value::*;
+    use crate::greeks::*;
+    use crate::value::*;
+    // use crate::value;
+    // use crate::greeks;
 
     const UNDERLYING: f64 = 64.68;
     const STRIKE: f64 = 65.00;
