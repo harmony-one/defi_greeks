@@ -35,8 +35,9 @@ struct GreeksResponse {
 }
 
 #[actix_web::post("/calculate_greeks")]
-async fn calculate_greeks(req: web::Json<GreeksRequest>) -> web::Json<GreeksResponse> {
+async fn calculate_greeks(req: web::Json<GreeksRequest>) -> actix_web::Result<web::Json<GreeksResponse>> {
     logger::log(Header::INFO, "Handling calculate_greeks request");
+    let req = req.into_inner();
     let delta_call = delta_call(req.s0, req.x, req.t, req.r, req.q, req.sigma);
     let delta_put = delta_put(req.s0, req.x, req.t, req.r, req.q, req.sigma);
     let lambda_call = lambda_call(req.s0, req.x, req.t, req.r, req.q, req.sigma, req.v);
@@ -61,7 +62,7 @@ async fn calculate_greeks(req: web::Json<GreeksRequest>) -> web::Json<GreeksResp
         gamma,
     };
 
-    web::Json(response)
+    Ok(web::Json(response))
 }
 
 #[derive(Deserialize)]
@@ -81,7 +82,7 @@ struct SqueethResponse {
 }
 
 #[actix_web::post("/squeeth")]
-async fn squeeth(req: web::Json<SqueethRequest>) -> web::Json<SqueethResponse> {
+async fn squeeth(req: web::Json<SqueethRequest>) -> actix_web::Result<web::Json<SqueethResponse>> {
     logger::log(Header::INFO, "Handling squeeth request");
     let sqth_to_usd = sqth_to_usd(req.eth_price, req.normalization_factor, req.iv);
     let sqth_delta = sqth_delta(req.eth_price, req.normalization_factor, req.iv);
@@ -97,7 +98,7 @@ async fn squeeth(req: web::Json<SqueethRequest>) -> web::Json<SqueethResponse> {
         sqth_vega,
     };
 
-    web::Json(response)
+    Ok(web::Json(response))
 }
 
 #[derive(Deserialize)]
@@ -117,7 +118,7 @@ struct ConcentratedLiquidityResponse {
 }
 
 #[actix_web::post("/concentrated-liquidity")]
-async fn concentrated_liquidity(req: web::Json<ConcentratedLiquidityRequest>) -> web::Json<ConcentratedLiquidityResponse> {
+async fn concentrated_liquidity(req: web::Json<ConcentratedLiquidityRequest>) -> actix_web::Result<web::Json<ConcentratedLiquidityResponse>> {
     logger::log(Header::INFO, "Handling concentrated-liquidity request");
     let virtual_liquidity = virtual_liquidity(req.p_a, req.p_b, req.r_a, req.r_b);
     let concentrated_delta = concentrated_delta(virtual_liquidity, req.p, req.p_b);
@@ -129,7 +130,7 @@ async fn concentrated_liquidity(req: web::Json<ConcentratedLiquidityRequest>) ->
         concentrated_gamma,
     };
 
-    web::Json(response)
+    Ok(web::Json(response))
 }
 
 #[actix_web::get("/health")]
